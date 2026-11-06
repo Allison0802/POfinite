@@ -1,0 +1,18 @@
+Package: pofinite
+Type: Package
+Title: Finite-Iteration Pseudo-Observation Prediction
+Version: 0.1.0
+Authors@R: person("Yumei", "Yang", email = "yumeiy@email.unc.edu",
+    role = c("aut", "cre"))
+Description: A fixed three-start finite-iteration predictor using raw risk
+    pseudo-observations, a complementary log-log conditional mean, unit Gaussian
+    working variance and working independence. Retains numerical diagnostics and
+    selects a finite prediction endpoint using training loss. Does not construct
+    pseudo-observations or provide robust standard errors or coefficient inference.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Depends: R (>= 4.1.0)
+Imports: stats, utils
+Collate: 'math.R' 'starts.R' 'solver.R' 'selection.R' 'api.R'
+URL: https://github.com/Allison0802/pofinite
+BugReports: https://github.com/Allison0802/pofinite/issues

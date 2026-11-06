@@ -1,0 +1,6 @@
+export(pofinite_fit)
+S3method(predict,pofinite)
+S3method(print,pofinite)
+S3method(coef,pofinite)
+importFrom(stats,predict,coef,quantile)
+importFrom(utils,tail)

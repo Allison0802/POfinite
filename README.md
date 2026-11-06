@@ -1,4 +1,4 @@
-# pofinite — finite-iteration pseudo-observation prediction
+# POfinite — finite-iteration pseudo-observation prediction
 
 A fixed three-start finite-iteration predictor for raw risk pseudo-observations.
 The matrix API uses a complementary log-log conditional mean, constant unit
@@ -22,21 +22,73 @@ Install the versioned GitHub release:
 
 ```r
 install.packages("remotes")  # only if needed
-remotes::install_github("Allison0802/pofinite@v0.1.0")
+remotes::install_github("Allison0802/POfinite@v0.1.0")
 ```
 
-Alternatively, download `pofinite_0.1.0.tar.gz` from the
-[release page](https://github.com/Allison0802/pofinite/releases/tag/v0.1.0)
+Alternatively, download `POfinite_0.1.0.tar.gz` from the
+[release page](https://github.com/Allison0802/POfinite/releases/tag/v0.1.0)
 and install it locally:
 
 ```r
-install.packages("pofinite_0.1.0.tar.gz", repos = NULL, type = "source")
+install.packages("POfinite_0.1.0.tar.gz", repos = NULL, type = "source")
 ```
+
+## Why retain finite endpoints?
+
+POfinite is designed to retain finite coefficient estimates and predictions even
+when strict-root convergence checks fail. This can be useful when a conventional
+GEE fitting workflow reports numerical or convergence difficulties. It evaluates
+three fixed starts, selects an eligible finite endpoint by training loss, and
+retains the failure and convergence diagnostics for inspection. If no endpoint
+is eligible, it reports failure rather than returning substitute predictions.
+
+In a synthetic comparison with geepack 1.3.13 (R 4.4.0), all three all-zero
+boundary fits from geepack reported native `error = 1`; POfinite retained finite
+coefficients and predictions while also failing its strict-root checks. Both
+packages returned finite values in that comparison. Across all five synthetic
+fixtures, all 15 endpoints from each package were finite. These results support
+POfinite's explicit handling of finite stopped endpoints, not a claim that
+geepack necessarily returns nonfinite values or that POfinite always succeeds.
+
+The following synthetic boundary example exercises this behavior without any
+clinical data:
+
+```r
+library(POfinite)
+x0 <- cbind(cell = 1, z = seq(-1.8, 1.8, length.out = 60))
+f0 <- pofinite_fit(x0, rep(0, nrow(x0)), intercepts = 1L)
+f0$status
+f0$selection$table
+vapply(f0$endpoints, function(e) e$metrics[["strict_pass"]], numeric(1))
+stopifnot(all(is.finite(coef(f0))), all(is.finite(predict(f0, x0))))
+```
+
+For an optional geepack comparison using the same starts and unit Gaussian
+working variance (geepack must be installed separately):
+
+```r
+lapply(f0$starts, function(b0) {
+  g <- geepack::geese.fit(
+    x0, rep(0, nrow(x0)), id = rep(seq_len(20), each = 3),
+    b = b0, gm = 1, family = gaussian(), mean.link = "cloglog",
+    variance = "gaussian", corstr = "independence", scale.fix = TRUE,
+    scale.value = 1,
+    control = geepack::geese.control(epsilon = 1e-8, maxit = 100)
+  )
+  list(native_error = g$error, coefficients = g$beta,
+       finite = all(is.finite(g$beta)))
+})
+```
+
+Results can vary with software versions and numerical environment. Finite
+coefficients or predictions do not establish convergence, a minimum, predictive
+accuracy, or valid inference. POfinite is not a general replacement for geepack
+and does not provide robust standard errors or confidence intervals.
 
 ## Synthetic example
 
 ```r
-library(pofinite)
+library(POfinite)
 z <- seq(-1, 1, length.out = 30)
 x <- cbind(cell = 1, z = z)
 y <- -expm1(-exp(-0.7 + 0.5 * z))

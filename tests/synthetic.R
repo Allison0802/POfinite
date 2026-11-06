@@ -1,4 +1,4 @@
-library(pofinite)
+library(POfinite)
 
 # Self-contained synthetic tests: no private data, reference files or network.
 nchecks <- 0L
@@ -12,7 +12,7 @@ fails <- function(expr, text) {
   e <- tryCatch({force(expr); NULL}, error=identity)
   inherits(e,"error") && grepl(text,conditionMessage(e),fixed=TRUE)
 }
-internal <- function(name) getFromNamespace(name,"pofinite")
+internal <- function(name) getFromNamespace(name,"POfinite")
 link <- function(eta) -expm1(-exp(eta))
 x <- cbind(cellA=rep(c(1,0),each=12), cellB=rep(c(0,1),each=12),
            z=rep(seq(-1,1,length.out=12),2))
@@ -108,7 +108,7 @@ check("all numeric errors yield explicit failure status", {
   # Fault injection exercises wrapper error reporting without changing solver code.
   f <- pofinite_fit
   environment(f) <- list2env(list(common_solve_fast=function(...)stop('synthetic fault')),
-                             parent=asNamespace('pofinite'))
+                             parent=asNamespace('POfinite'))
   failed <- f(x,y,1:2)
   failed$status=='NO_ELIGIBLE_ENDPOINT' && is.na(failed$selected) &&
     all(is.na(coef(failed))) && all(vapply(failed$endpoints,function(e)

@@ -1,4 +1,4 @@
-# pofinite 0.1.0
+# POfinite 0.1.0
 
 * Package the fixed three-start finite-iteration pseudo-observation predictor,
   retaining endpoint diagnostics and training-only selection.

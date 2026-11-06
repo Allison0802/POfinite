@@ -1,4 +1,4 @@
-Package: pofinite
+Package: POfinite
 Type: Package
 Title: Finite-Iteration Pseudo-Observation Prediction
 Version: 0.1.0
@@ -14,5 +14,5 @@ Encoding: UTF-8
 Depends: R (>= 4.1.0)
 Imports: stats, utils
 Collate: 'math.R' 'starts.R' 'solver.R' 'selection.R' 'api.R'
-URL: https://github.com/Allison0802/pofinite
-BugReports: https://github.com/Allison0802/pofinite/issues
+URL: https://github.com/Allison0802/POfinite
+BugReports: https://github.com/Allison0802/POfinite/issues

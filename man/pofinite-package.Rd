@@ -1,6 +1,6 @@
-\name{pofinite-package}
-\alias{pofinite-package}
-\alias{pofinite}
+\name{POfinite-package}
+\alias{POfinite-package}
+\alias{POfinite}
 \docType{package}
 \title{Finite-Iteration Pseudo-Observation Prediction}
 \description{
